@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
@@ -16,6 +13,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('categorizes', function (Blueprint $table) {
@@ -24,14 +22,5 @@ return new class extends Migration
             $table->morphs('categorize');
             $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('categorizes');
-        Schema::dropIfExists('categories');
     }
 };

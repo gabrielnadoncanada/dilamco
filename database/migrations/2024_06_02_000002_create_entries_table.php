@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('entries', function (Blueprint $table) {
@@ -19,17 +16,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('published_at')->default(now());
             $table->boolean('is_visible')->default(true);
-            $table->string('image')->nullable();
-
             $table->timestamps();
+            $table->softDeletes();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('entries');
     }
 };

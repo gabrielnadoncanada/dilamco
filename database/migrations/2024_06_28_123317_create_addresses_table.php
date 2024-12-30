@@ -16,11 +16,9 @@ return new class extends Migration
             $table->string('country');
             $table->string('postal_code');
             $table->text('note')->nullable();
-
             $table->morphs('addressable');
-            $table->timestamps();
-
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 };

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->json('payload');
             $table->timestamps();
             $table->unique(['group', 'name']);
-
         });
     }
 };

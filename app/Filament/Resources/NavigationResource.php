@@ -28,7 +28,6 @@ class NavigationResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
-
     protected static ?string $navigationGroup = 'Site';
 
     protected static ?int $navigationSort = 2;
@@ -37,25 +36,26 @@ class NavigationResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('')->schema([
-                    TextInput::make(Navigation::TITLE)
-                        ->reactive()
-                        ->debounce()
-                        ->afterStateUpdated(function (?string $state, Set $set) {
-                            if (! $state) {
-                                return;
-                            }
+                Section::make('')
+                    ->schema([
+                        TextInput::make(Navigation::TITLE)
+                            ->reactive()
+                            ->debounce()
+                            ->afterStateUpdated(function (?string $state, Set $set) {
+                                if (!$state) {
+                                    return;
+                                }
 
-                            $set(Navigation::HANDLE, Str::slug($state));
-                        })
-                        ->required(),
-                    Hidden::make(Navigation::HANDLE)
-                        ->required()
-                        ->unique(column: Navigation::HANDLE, ignoreRecord: true),
-                    MenuBuilder::make(Navigation::ITEMS)
-                        ->default([])
-                        ->columnSpanFull(),
-                ]),
+                                $set(Navigation::HANDLE, Str::slug($state));
+                            })
+                            ->required(),
+                        Hidden::make(Navigation::HANDLE)
+                            ->required()
+                            ->unique(column: Navigation::HANDLE, ignoreRecord: true),
+                        MenuBuilder::make(Navigation::ITEMS)
+                            ->default([])
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 

@@ -8,17 +8,23 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Tables\Actions\SoftDeleteAction;
 use App\Filament\Tables\Actions\SoftDeleteBulkAction;
 use App\Models\User;
-use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Actions\RestoreAction;
+use Filament\Tables\Actions\RestoreBulkAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-class UserResource extends AbstractResource implements HasShieldPermissions
+class UserResource extends AbstractResource
 {
     protected static ?string $model = User::class;
 
@@ -27,10 +33,6 @@ class UserResource extends AbstractResource implements HasShieldPermissions
     protected static ?string $recordTitleAttribute = 'users';
 
     protected static ?int $navigationSort = 6;
-
-    protected static ?string $tenantRelationshipName = 'users';
-
-    protected static ?string $tenantOwnershipRelationshipName = 'tenants';
 
     public static function leftColumn(): array
     {
@@ -41,7 +43,7 @@ class UserResource extends AbstractResource implements HasShieldPermissions
                 ->columnSpan(1),
             Section::make(__('filament.sections.password'))
                 ->collapsible()
-                ->collapsed(fn ($record) => $record)
+                ->collapsed(fn($record) => $record)
                 ->schema(static::getPasswordFormComponent()),
         ];
     }
@@ -50,46 +52,45 @@ class UserResource extends AbstractResource implements HasShieldPermissions
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make(User::FIRST_NAME)
+                TextColumn::make(User::FIRST_NAME)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make(User::LAST_NAME)
+                TextColumn::make(User::LAST_NAME)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make(User::EMAIL)
+                TextColumn::make(User::EMAIL)
                     ->sortable()
                     ->searchable(),
-
-                Tables\Columns\TextColumn::make(User::PHONE)
+                TextColumn::make(User::PHONE)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make(User::EMAIL_VERIFIED_AT)
+                TextColumn::make(User::EMAIL_VERIFIED_AT)
                     ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-                Tables\Columns\TextColumn::make(User::CREATED_AT)
+                TextColumn::make(User::CREATED_AT)
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make(User::UPDATED_AT)
+                TextColumn::make(User::UPDATED_AT)
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
             ->actions([
                 ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 SoftDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                RestoreAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+                BulkActionGroup::make([
                     SoftDeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -97,18 +98,17 @@ class UserResource extends AbstractResource implements HasShieldPermissions
     public static function getFormFieldsSchema(): array
     {
         return [
-            Forms\Components\TextInput::make(User::FIRST_NAME)
+            TextInput::make(User::FIRST_NAME)
                 ->required(),
-            Forms\Components\TextInput::make(User::LAST_NAME)
+            TextInput::make(User::LAST_NAME)
                 ->required(),
-            Forms\Components\TextInput::make(User::EMAIL)
+            TextInput::make(User::EMAIL)
                 ->email()
                 ->unique(ignoreRecord: true)
                 ->required(),
             PhoneInput::make(User::PHONE)
                 ->default(null),
-
-            Forms\Components\Textarea::make(User::NOTE)
+            Textarea::make(User::NOTE)
                 ->rows(4)
                 ->columnSpanFull(),
         ];
@@ -117,20 +117,20 @@ class UserResource extends AbstractResource implements HasShieldPermissions
     protected static function getPasswordFormComponent(): array
     {
         return [
-            Forms\Components\TextInput::make(User::PASSWORD)
+            TextInput::make(User::PASSWORD)
                 ->password()
-                ->required(fn (?User $record) => $record === null)
+                ->required(fn(?User $record) => $record === null)
                 ->rule(Password::default())
                 ->autocomplete('new-password')
-                ->dehydrated(fn ($state): bool => filled($state))
-                ->dehydrateStateUsing(fn ($state): string => Hash::make($state))
+                ->dehydrated(fn($state): bool => filled($state))
+                ->dehydrateStateUsing(fn($state): string => Hash::make($state))
                 ->live(debounce: 500)
                 ->same('passwordConfirmation'),
-            Forms\Components\TextInput::make('passwordConfirmation')
+            TextInput::make('passwordConfirmation')
                 ->label('Confirmation du mot de passe')
                 ->password()
                 ->required()
-                ->visible(fn (Get $get): bool => filled($get('password')))
+                ->visible(fn(Get $get): bool => filled($get('password')))
                 ->dehydrated(false),
         ];
     }
@@ -146,26 +146,6 @@ class UserResource extends AbstractResource implements HasShieldPermissions
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
-        ];
-    }
-
-    public static function getPermissionPrefixes(): array
-    {
-        return [
-            'view',
-            'view_any',
-            'view_own',
-            'create',
-            'update',
-            'update_own',
-            'delete',
-            'delete_any',
-            'restore',
-            'restore_any',
-            'replicate',
-            'reorder',
-            'force_delete',
-            'force_delete_any',
         ];
     }
 }

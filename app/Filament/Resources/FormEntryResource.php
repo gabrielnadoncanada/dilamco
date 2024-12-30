@@ -18,6 +18,7 @@ class FormEntryResource extends Resource
     protected static ?string $pluralLabel = 'messages';
 
     protected static ?string $model = FormEntry::class;
+
     protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $navigationGroup = 'Site';

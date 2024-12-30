@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Template extends Model
 {
@@ -31,7 +32,7 @@ class Template extends Model
         'content' => 'array',
     ];
 
-    public function templateable()
+    public function templateable(): MorphTo
     {
         return $this->morphTo();
     }

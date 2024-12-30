@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Collection extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSlug;
 
     public const ID = 'id';
 
@@ -19,8 +20,6 @@ class Collection extends Model
     public const HAS_ARCHIVE = 'has_archive';
 
     public const SINGLE_ID = 'single_id';
-
-    public const PERMALINK_TYPE = 'permalink_type';
 
     public const SHOW_IN_ADMIN_MENU = 'show_in_admin_menu';
 
@@ -39,17 +38,21 @@ class Collection extends Model
         return $this->hasMany(Entry::class);
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($collection) {
-            $collection->{self::SLUG} = Str::slug($collection->{self::TITLE});
-        });
-    }
-
     public function single(): BelongsTo
     {
         return $this->belongsTo(Single::class);
+    }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(self::TITLE)
+            ->doNotGenerateSlugsOnUpdate()
+            ->saveSlugsTo(self::SLUG);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return self::SLUG;
     }
 }

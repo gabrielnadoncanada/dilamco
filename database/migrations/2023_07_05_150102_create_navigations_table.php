@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('navigations', function (Blueprint $table) {
@@ -18,18 +13,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('handle')->unique();
             $table->longText('items')->nullable();
-
             $table->timestamps();
+            $table->softDeletes();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('navigations');
     }
 };

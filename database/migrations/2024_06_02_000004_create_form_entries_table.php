@@ -6,32 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('form_entries', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
             $table->string('tel')->nullable();
-
             $table->longText('message');
+            $table->softDeletes();
+            $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('form_entries');
     }
 };

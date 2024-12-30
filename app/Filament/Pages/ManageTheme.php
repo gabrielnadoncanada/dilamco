@@ -20,8 +20,6 @@ class ManageTheme extends SettingsPage
 
     protected static string $settings = ThemeSettings::class;
 
-    protected static ?string $navigationGroup = 'Site';
-
     protected static ?int $navigationSort = 5;
 
     public function form(Form $form): Form
@@ -96,7 +94,11 @@ class ManageTheme extends SettingsPage
             PageSelect::make('project_page_id'),
             PageSelect::make('career_page_id'),
             PageSelect::make('team_page_id'),
-
         ];
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.group.administration');
     }
 }

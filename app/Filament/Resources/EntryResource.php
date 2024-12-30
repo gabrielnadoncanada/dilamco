@@ -9,15 +9,24 @@ use App\Filament\Fields\TitleWithSlugInput;
 use App\Filament\Resources\EntryResource\Pages;
 use App\Models\Collection;
 use App\Models\Entry;
+use App\Models\Shop;
+use App\Models\Single;
+use App\Tables\Columns\TextImage;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Pboivin\FilamentPeek\Tables\Actions\ListPreviewAction;
@@ -39,7 +48,8 @@ class EntryResource extends AbstractResource
                     ),
                     Textarea::make(Entry::DESCRIPTION)
                         ->rows(3),
-                    FileUpload::make(Entry::IMAGE)
+                    SpatieMediaLibraryFileUpload::make(Entry::IMAGE)
+                        ->collection(Entry::MEDIA_COLLECTION)
                         ->image(),
                 ]),
             Section::make('SEO')
@@ -86,49 +96,26 @@ class EntryResource extends AbstractResource
     {
         return $table
             ->columns([
-                ImageColumn::make(Entry::IMAGE),
-
+                SpatieMediaLibraryImageColumn::make(Entry::IMAGE)
+                    ->collection(Entry::MEDIA_COLLECTION),
                 TextColumn::make(Entry::TITLE)
                     ->tooltip(fn ($record): string => $record->{Entry::DESCRIPTION} ?? ''),
-
                 IsVisible::make(Entry::IS_VISIBLE),
             ])
             ->filters([])
             ->actions([
                 ActionGroup::make([
                     ListPreviewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+               CreateAction::make(),
             ])
             ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            // Define your relations here
-        ];
-    }
-
-    public static function getGeneralSchema(): array
-    {
-        return [
-            TitleWithSlugInput::make(
-                fieldTitle: Entry::TITLE,
-                fieldSlug: Entry::SLUG,
-                urlPath: '/blog/',
-            ),
-            Textarea::make(Entry::DESCRIPTION)
-                ->rows(3),
-            FileUpload::make(Entry::IMAGE)
-                ->image(),
-        ];
     }
 
     public static function getPages(): array

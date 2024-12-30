@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Clusters\Contents\Resources\SingleResource;
 use App\Filament\Pages\Auth\Login;
 use App\Settings\ThemeSettings;
 use Devlense\FilamentBuilder\FilamentBuilderPlugin;
@@ -10,8 +9,6 @@ use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\NavigationBuilder;
-use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\SpatieLaravelTranslatablePlugin;
@@ -75,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
                     SpatieLaravelTranslatablePlugin::make()->defaultLocales(['fr', 'en']),
                     FilamentBuilderPlugin::make(),
                 ]);
-//                ->viteTheme('resources/css/filament/app/theme.css')
+        //                ->viteTheme('resources/css/filament/app/theme.css')
 
     }
 }

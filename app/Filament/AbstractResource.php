@@ -45,18 +45,18 @@ abstract class AbstractResource extends Resource
 
         ];
     }
-//
-//    public static function getModelLabel(): string
-//    {
-//        $parentLabel = parent::getModelLabel();
-//        $translationKey = 'filament.models.'.$parentLabel;
-//
-//        if (Lang::has($translationKey)) {
-//            return __($translationKey);
-//        } else {
-//            return $parentLabel;
-//        }
-//    }
+    //
+    //    public static function getModelLabel(): string
+    //    {
+    //        $parentLabel = parent::getModelLabel();
+    //        $translationKey = 'filament.models.'.$parentLabel;
+    //
+    //        if (Lang::has($translationKey)) {
+    //            return __($translationKey);
+    //        } else {
+    //            return $parentLabel;
+    //        }
+    //    }
 
     public static function getRecordTitle(?Model $record): string|Htmlable|null
     {

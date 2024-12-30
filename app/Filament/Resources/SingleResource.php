@@ -20,7 +20,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Pboivin\FilamentPeek\Tables\Actions\ListPreviewAction;
@@ -50,7 +54,16 @@ class SingleResource extends Resource
                                 Tabs::make('Tabs')
                                     ->tabs([
                                         Tabs\Tab::make('General')
-                                            ->schema(static::getGeneralSchema()),
+                                            ->schema([
+                                                TitleWithSlugInput::make(
+                                                    fieldTitle: Single::TITLE,
+                                                    fieldSlug: Single::SLUG,
+                                                ),
+                                                Textarea::make(Single::DESCRIPTION)
+                                                    ->rows(3),
+                                                FileUpload::make(Single::IMAGE)
+                                                    ->image(),
+                                            ]),
                                         Tabs\Tab::make('SEO')
                                             ->schema([
                                                 Meta::make(),
@@ -80,29 +93,23 @@ class SingleResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make(Single::IMAGE),
+                SpatieMediaLibraryImageColumn::make(Single::IMAGE)
+                    ->collection(Single::MEDIA_COLLECTION),
                 TextColumn::make(Single::TITLE)
-                    ->tooltip(fn ($record): string => $record->{Single::DESCRIPTION} ?? ''),
+                    ->tooltip(fn($record): string => $record->{Single::DESCRIPTION} ?? ''),
                 IsVisible::make(Single::IS_VISIBLE),
             ])
             ->filters([])
             ->actions([
                 ActionGroup::make([
                     ListPreviewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]),
             ])
             ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            // Define your relations here
-        ];
     }
 
     public static function getPages(): array
@@ -111,20 +118,6 @@ class SingleResource extends Resource
             'index' => Pages\ListSingles::route('/'),
             'create' => Pages\CreateSingle::route('/create'),
             'edit' => Pages\EditSingle::route('/{record}/edit'),
-        ];
-    }
-
-    public static function getGeneralSchema(): array
-    {
-        return [
-            TitleWithSlugInput::make(
-                fieldTitle: Single::TITLE,
-                fieldSlug: Single::SLUG,
-            ),
-            Textarea::make(Single::DESCRIPTION)
-                ->rows(3),
-            FileUpload::make(Single::IMAGE)
-                ->image(),
         ];
     }
 }

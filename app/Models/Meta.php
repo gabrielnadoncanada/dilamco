@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Meta extends Model
+class Meta extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     public const ID = 'id';
 
@@ -21,11 +24,11 @@ class Meta extends Model
 
     public const INDEXABLE = 'indexable';
 
-    public const IMAGE = 'image';
-
     public const CREATED_AT = 'created_at';
 
     public const UPDATED_AT = 'updated_at';
+
+    public const MEDIA_COLLECTION = 'metas';
 
     protected $guarded = [
 
@@ -36,7 +39,7 @@ class Meta extends Model
         'indexable' => 'boolean',
     ];
 
-    public function metaable()
+    public function metaable(): MorphTo
     {
         return $this->morphTo();
     }

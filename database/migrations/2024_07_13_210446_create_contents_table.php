@@ -15,9 +15,4 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
-    public function down()
-    {
-        Schema::dropIfExists(config('filament-builder.content_table_name', 'contents'));
-    }
 };

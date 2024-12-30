@@ -14,16 +14,24 @@ use App\Traits\HasMeta;
 use Devlense\FilamentBuilder\Concerns\HasContent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
-class Single extends Model
+
+class Single extends Model implements HasMedia
 {
     use HasContent;
     use HasFactory;
     use HasMeta;
+    use HasSlug;
+    use InteractsWithMedia;
 
     public const ID = 'id';
 
     public const TITLE = 'title';
+    public const IMAGE = 'image';
 
     public const SLUG = 'slug';
 
@@ -33,11 +41,11 @@ class Single extends Model
 
     public const PUBLISHED_AT = 'published_at';
 
-    public const IMAGE = 'image';
-
     public const CREATED_AT = 'created_at';
 
     public const UPDATED_AT = 'updated_at';
+
+    public const MEDIA_COLLECTION = 'singles';
 
     protected $guarded = [];
 
@@ -45,23 +53,12 @@ class Single extends Model
         'status' => PublishedStatus::class,
     ];
 
-    public function scopePublished($query)
-    {
-        return $query->where('is_visible', '!=', false)
-            ->where('published_at', '<=', now());
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return filament()->isServing() ? 'id' : 'slug->'.app()->getLocale();
-    }
-
     public function getBasePath(): string
     {
         return '/';
     }
 
-    public function getPublicUrl()
+    public function getPublicUrl(): string
     {
         return url()->to($this->getBasePath().$this->slug.'/');
     }
@@ -70,12 +67,6 @@ class Single extends Model
     {
         return app(ThemeSettings::class)->home_page_id == $this->id;
     }
-
-    //    public function isArchivePage(): bool
-    //    {
-    //        return app(ThemeSettings::class)->site_blog_page_id == $this->id
-    //            || app(ThemeSettings::class)->site_service_page_id == $this->id;
-    //    }
 
     public function isServicesPage(): bool
     {
@@ -109,5 +100,19 @@ class Single extends Model
         }
 
         return Single::class;
+    }
+
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(self::TITLE)
+            ->doNotGenerateSlugsOnUpdate()
+            ->saveSlugsTo(self::SLUG);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return self::SLUG;
     }
 }
