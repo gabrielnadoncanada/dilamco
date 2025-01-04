@@ -10,7 +10,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-
 class Category extends Model implements HasMedia
 {
     use HasFactory, HasSlug, InteractsWithMedia;
@@ -32,7 +31,6 @@ class Category extends Model implements HasMedia
     public const UPDATED_AT = 'updated_at';
 
     public const MEDIA_COLLECTION = 'categories';
-
 
     public function items(): MorphToMany
     {

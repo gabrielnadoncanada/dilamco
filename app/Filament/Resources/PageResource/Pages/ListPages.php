@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\SingleResource\Pages;
+namespace App\Filament\Resources\PageResource\Pages;
 
-use App\Filament\Resources\SingleResource;
+use App\Filament\Resources\PageResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 
-class ListSingles extends ListRecords
+class ListPages extends ListRecords
 {
-    protected static string $resource = SingleResource::class;
+    protected static string $resource = PageResource::class;
 
     protected function getTableQuery(): ?Builder
     {

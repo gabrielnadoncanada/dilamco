@@ -38,9 +38,9 @@ class Collection extends Model
         return $this->hasMany(Entry::class);
     }
 
-    public function single(): BelongsTo
+    public function page(): BelongsTo
     {
-        return $this->belongsTo(Single::class);
+        return $this->belongsTo(Page::class);
     }
 
     public function getSlugOptions(): SlugOptions

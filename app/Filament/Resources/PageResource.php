@@ -6,32 +6,32 @@ use App\Filament\Fields\IsVisible;
 use App\Filament\Fields\Meta;
 use App\Filament\Fields\TimeStampSection;
 use App\Filament\Fields\TitleWithSlugInput;
-use App\Filament\Resources\SingleResource\Pages;
-use App\Models\Single;
+use App\Filament\Resources\PageResource\Pages\CreatePage;
+use App\Filament\Resources\PageResource\Pages\EditPage;
+use App\Filament\Resources\PageResource\Pages\ListPages;
+use App\Models\Page;
 use Devlense\FilamentBuilder\Components\Content;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Pboivin\FilamentPeek\Tables\Actions\ListPreviewAction;
 
-class SingleResource extends Resource
+class PageResource extends Resource
 {
-    protected static ?string $model = Single::class;
+    protected static ?string $model = Page::class;
 
     protected static ?string $navigationGroup = 'Site';
 
@@ -39,7 +39,7 @@ class SingleResource extends Resource
 
     protected static bool $shouldRegisterNavigation = true;
 
-    protected static ?string $recordTitleAttribute = Single::TITLE;
+    protected static ?string $recordTitleAttribute = Page::TITLE;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -56,12 +56,13 @@ class SingleResource extends Resource
                                         Tabs\Tab::make('General')
                                             ->schema([
                                                 TitleWithSlugInput::make(
-                                                    fieldTitle: Single::TITLE,
-                                                    fieldSlug: Single::SLUG,
+                                                    fieldTitle: Page::TITLE,
+                                                    fieldSlug: Page::SLUG,
                                                 ),
-                                                Textarea::make(Single::DESCRIPTION)
+                                                Textarea::make(Page::DESCRIPTION)
                                                     ->rows(3),
-                                                FileUpload::make(Single::IMAGE)
+                                                SpatieMediaLibraryFileUpload::make(Page::IMAGE)
+                                                    ->collection(Page::MEDIA_COLLECTION)
                                                     ->image(),
                                             ]),
                                         Tabs\Tab::make('SEO')
@@ -76,9 +77,9 @@ class SingleResource extends Resource
                                 TimeStampSection::make(),
                                 Section::make('Status')
                                     ->schema([
-                                        Toggle::make(Single::IS_VISIBLE)
+                                        Toggle::make(Page::IS_VISIBLE)
                                             ->default(true),
-                                        DatePicker::make(Single::PUBLISHED_AT)
+                                        DatePicker::make(Page::PUBLISHED_AT)
                                             ->default(now())
                                             ->required(),
                                     ]),
@@ -93,11 +94,11 @@ class SingleResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make(Single::IMAGE)
-                    ->collection(Single::MEDIA_COLLECTION),
-                TextColumn::make(Single::TITLE)
-                    ->tooltip(fn($record): string => $record->{Single::DESCRIPTION} ?? ''),
-                IsVisible::make(Single::IS_VISIBLE),
+                SpatieMediaLibraryImageColumn::make(Page::IMAGE)
+                    ->collection(Page::MEDIA_COLLECTION),
+                TextColumn::make(Page::TITLE)
+                    ->tooltip(fn ($record): string => $record->{Page::DESCRIPTION} ?? ''),
+                IsVisible::make(Page::IS_VISIBLE),
             ])
             ->filters([])
             ->actions([
@@ -115,9 +116,9 @@ class SingleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSingles::route('/'),
-            'create' => Pages\CreateSingle::route('/create'),
-            'edit' => Pages\EditSingle::route('/{record}/edit'),
+            'index' => ListPages::route('/'),
+            'create' => CreatePage::route('/create'),
+            'edit' => EditPage::route('/{record}/edit'),
         ];
     }
 }

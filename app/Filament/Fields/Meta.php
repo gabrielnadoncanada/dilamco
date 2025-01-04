@@ -2,8 +2,8 @@
 
 namespace App\Filament\Fields;
 
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -18,8 +18,8 @@ class Meta
             Textarea::make('description')
                 ->label('Description')
                 ->rows(3),
-            FileUpload::make('image')
-                ->image()
+            SpatieMediaLibraryFileUpload::make('image')
+                ->collection('meta')
                 ->label('Image'),
             Toggle::make('indexable')
                 ->default(true)

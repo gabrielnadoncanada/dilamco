@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Entry;
-use App\Models\Product;
 use Database\Factories\Concerns\CanCreateImages;
 use Database\Seeders\LocalImages;
 use Illuminate\Database\Eloquent\Factories\Factory;

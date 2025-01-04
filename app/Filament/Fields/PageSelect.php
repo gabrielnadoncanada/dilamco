@@ -2,7 +2,7 @@
 
 namespace App\Filament\Fields;
 
-use App\Models\Single;
+use App\Models\Page;
 use Filament\Forms\Components\Select;
 
 class PageSelect extends Select
@@ -11,6 +11,6 @@ class PageSelect extends Select
     {
         parent::setUp();
 
-        $this->options(fn () => Single::all()->pluck('title', 'id')->toArray());
+        $this->options(fn () => Page::all()->pluck('title', 'id')->toArray());
     }
 }

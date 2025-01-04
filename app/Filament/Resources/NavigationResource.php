@@ -42,7 +42,7 @@ class NavigationResource extends Resource
                             ->reactive()
                             ->debounce()
                             ->afterStateUpdated(function (?string $state, Set $set) {
-                                if (!$state) {
+                                if (! $state) {
                                     return;
                                 }
 

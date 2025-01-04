@@ -2,22 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\PermalinkType;
-use App\Filament\AbstractResource;
 use App\Filament\Fields\TitleWithSlugInput;
 use App\Filament\Resources\CollectionResource\Pages;
 use App\Filament\Resources\CollectionResource\Pages\CreateCollection;
 use App\Filament\Resources\CollectionResource\Pages\EditCollection;
 use App\Models\Collection;
-use App\Models\Entry;
-use App\Models\Single;
+use App\Models\Page;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
 use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\Page;
-use Filament\Tables;
+use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
@@ -25,7 +22,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Guava\FilamentIconPicker\Forms\IconPicker;
 
-class CollectionResource extends AbstractResource
+class CollectionResource extends Resource
 {
     protected static ?string $model = Collection::class;
 
@@ -33,32 +30,34 @@ class CollectionResource extends AbstractResource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static function leftColumn(): array
+    public static function form(Form $form): Form
     {
-        return [
-            Section::make(self::getDetailsSchema()),
-        ];
-    }
+        return $form
+            ->schema([
+                Group::make()
+                    ->schema([
+                        Section::make([
+                            TitleWithSlugInput::make(
+                                fieldTitle: Collection::TITLE,
+                                fieldSlug: Collection::SLUG,
+                            ),
+                            Toggle::make(Collection::SHOW_IN_ADMIN_MENU)
+                                ->default(true),
+                            IconPicker::make(Collection::ADMIN_MENU_ICON)
+                                ->required()
+                                ->preload(),
+                            Toggle::make(Collection::HAS_ARCHIVE)
+                                ->live()
+                                ->default(true),
+                            Select::make(Collection::SINGLE_ID)
+                                ->hidden(fn ($get) => ! $get(Collection::HAS_ARCHIVE))
+                                ->relationship('page', Page::TITLE),
+                        ]),
+                    ])
+                    ->columnSpan(['lg' => fn ($record) => 2]),
 
-    public static function getDetailsSchema(): array
-    {
-        return [
-            TitleWithSlugInput::make(
-                fieldTitle: Collection::TITLE,
-                fieldSlug: Collection::SLUG,
-            ),
-            Toggle::make(Collection::SHOW_IN_ADMIN_MENU)
-                ->default(true),
-            IconPicker::make(Collection::ADMIN_MENU_ICON)
-                ->required()
-                ->preload(),
-            Toggle::make(Collection::HAS_ARCHIVE)
-                ->live()
-                ->default(true),
-            Select::make(Collection::SINGLE_ID)
-                ->hidden(fn ($get) => ! $get(Collection::HAS_ARCHIVE))
-                ->relationship('single', Single::TITLE),
-        ];
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -82,7 +81,7 @@ class CollectionResource extends AbstractResource
             ]);
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getRecordSubNavigation(Page|\Filament\Resources\Pages\Page $page): array
     {
         return $page->generateNavigationItems([
             Pages\EditCollection::class,

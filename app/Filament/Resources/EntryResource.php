@@ -9,23 +9,17 @@ use App\Filament\Fields\TitleWithSlugInput;
 use App\Filament\Resources\EntryResource\Pages;
 use App\Models\Collection;
 use App\Models\Entry;
-use App\Models\Shop;
-use App\Models\Single;
-use App\Tables\Columns\TextImage;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -111,7 +105,7 @@ class EntryResource extends AbstractResource
                 ]),
             ])
             ->headerActions([
-               CreateAction::make(),
+                CreateAction::make(),
             ])
             ->groupedBulkActions([
                 DeleteBulkAction::make(),

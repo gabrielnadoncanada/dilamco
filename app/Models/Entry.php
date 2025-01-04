@@ -27,6 +27,7 @@ class Entry extends Model implements HasMedia
     public const TITLE = 'title';
 
     public const SLUG = 'slug';
+
     public const IMAGE = 'image';
 
     public const DESCRIPTION = 'description';
@@ -42,7 +43,6 @@ class Entry extends Model implements HasMedia
     public const UPDATED_AT = 'updated_at';
 
     public const MEDIA_COLLECTION = 'entries';
-
 
     protected $guarded = [];
 

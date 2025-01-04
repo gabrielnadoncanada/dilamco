@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('title');
             $table->boolean('show_in_admin_menu')->default(true);
             $table->boolean('has_archive')->default(true);
-            $table->foreignId('single_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('page_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('admin_menu_icon')->default('heroicon-o-rectangle-stack');
             $table->string('slug');
             $table->softDeletes();

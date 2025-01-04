@@ -19,8 +19,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-
-class Single extends Model implements HasMedia
+class Page extends Model implements HasMedia
 {
     use HasContent;
     use HasFactory;
@@ -31,6 +30,7 @@ class Single extends Model implements HasMedia
     public const ID = 'id';
 
     public const TITLE = 'title';
+
     public const IMAGE = 'image';
 
     public const SLUG = 'slug';
@@ -99,9 +99,8 @@ class Single extends Model implements HasMedia
             return Services::class;
         }
 
-        return Single::class;
+        return Page::class;
     }
-
 
     public function getSlugOptions(): SlugOptions
     {

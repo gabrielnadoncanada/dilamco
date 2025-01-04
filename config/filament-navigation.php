@@ -5,6 +5,6 @@ return [
         'External' => 'External',
         'App\Models\Entry' => 'Blog post',
 
-        'App\Models\Single' => 'Page',
+        'App\Models\Page' => 'Page',
     ],
 ];
